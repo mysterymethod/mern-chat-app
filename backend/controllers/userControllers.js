@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { default: mongoose } = require('mongoose');
+const generateToken = require('../config/generateToken');
 const User = require('../models/userModel')
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -16,7 +17,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExist = await User.findOne({ email });
 
   //if user is found throw error
-  if (userExists) {
+  if (userExist) {
     res.status(400)
     throw new Error('User already exists')
   }
@@ -30,12 +31,14 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   //if user is succesfully created
+  //also create a fresh jwt token for user
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      pic: user.pic
+      pic: user.pic,
+      token: generateToken(user._id)
     })
   }
 
