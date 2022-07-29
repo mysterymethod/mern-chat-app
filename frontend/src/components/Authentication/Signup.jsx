@@ -25,8 +25,49 @@ const Signup = () => {
 
   }
 
-  const postDetails = () => {
-    
+  // upload picture to cloundinary.
+  const postDetails = (pics) => {
+    setPicLoading(true)
+
+
+    // pic is not is correct format or undifined.
+    if (pics == undefined) {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    // create new form, append img data, and upload it to cloudinary. 
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "piyushproj");
+
+      fetch("https://api.cloudinary.com/v1_1/drfnba0x8/image/upload", {
+        method: "post",
+        body: data,
+      })
+        //set setPic state with response data
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data.url.toString());
+          setPicLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setPicLoading(false);
+        });
+    }
+
+
+
   }
 
 
