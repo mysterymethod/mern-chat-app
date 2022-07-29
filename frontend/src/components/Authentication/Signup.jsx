@@ -21,16 +21,102 @@ const Signup = () => {
   const [pic, setPic] = useState();
   const [picLoading, setPicLoading] = useState(false);
 
-  const submitHandler = () => {
+
+  // FUNCTION - to handle submit at signup
+  const submitHandler = async () => {
+    setPicLoading(true);
+
+    // check if all the fields are filled.
+    if (!name || !email || !password || !confirmpassword) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+    }
+
+    // check both password matched or not
+    if (password !== confirmpassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    console.log(name, email, password, pic);
+
+    try {
+
+      // setting the header for post request
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      // post request at the API
+      const { data } = await axios.post(
+        "/api/user",
+        {
+          name,
+          email,
+          password,
+          pic,
+        },
+        config
+      );
+      console.log(data);
+
+      // registration successful message
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
+      // localStorage is a new JavaScript API in HTML5 that allows us to save data in key/value pairs in a user's browser. 
+      // It's a little bit like cookies except: Cookies expire and get cleared a lot, localStorage is forever (until explicitly cleared). 
+      // localStorage isn't sent along in HTTP Requests, you have to ask for it.
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setPicLoading(false);
+
+      history.push("/chats");
+
+
+    } catch (error) {
+
+      // for any other error
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+    }
+
 
   }
 
-  // upload picture to cloundinary.
+
+
+  // FUNCTION - upload picture to cloundinary.
   const postDetails = (pics) => {
     setPicLoading(true)
 
-
-    // pic is not is correct format or undifined.
+    // pic is undifined.
     if (pics == undefined) {
       toast({
         title: "Please Select an Image!",
@@ -64,6 +150,19 @@ const Signup = () => {
           console.log(err);
           setPicLoading(false);
         });
+    }
+
+    // pic is not in correct format 
+    else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
     }
 
 
