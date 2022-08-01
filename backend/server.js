@@ -16,6 +16,7 @@ app.use(express.json())   // to accept json data
 
 
 app.use('/api/user', userRoutes)
+app.use('/api/chat', chatRoutes)
 
 
 // Error Handling
