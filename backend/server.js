@@ -2,9 +2,10 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 const { application } = require("express");
-const { chats } = require("./data/data");
+
 const connectDB = require("./config/db");
 const userRoutes = require('./routes/userRoutes');
+const chatsRoutes = require('./routes/chatRoutes');
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 
@@ -16,7 +17,7 @@ app.use(express.json())   // to accept json data
 
 
 app.use('/api/user', userRoutes)
-app.use('/api/chat', chatRoutes)
+app.use('/api/chat', chatsRoutes)
 
 
 // Error Handling

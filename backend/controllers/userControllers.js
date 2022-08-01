@@ -78,10 +78,13 @@ const authUser = asyncHandler(async (req, res) => {
 
 
 
-// url for seach - /api/user?search?pranoy
+// url for seach - /api/user?search=pranoy&lastname=agarwal
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
-    ? {
+    ? { 
+        // ($or) is a mongodb function which returns true if any condition returns true.
+        // regex = search strings in efficient way.
+        // options = i, case-insensitive search
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
           { email: { $regex: req.query.search, $options: "i" } },
@@ -89,6 +92,9 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {};
 
+
+  // { _id: { $ne: req.user._id } } = except this user find all the users that is part of the above
+  // search result.
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   res.send(users);
 });
