@@ -9,9 +9,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ChakraProvider>
     <BrowserRouter>
-      <React.StrictMode>
+      <ChatProvider>
         <App />
-      </React.StrictMode>
+      </ChatProvider>
     </BrowserRouter>
   </ChakraProvider>
 );
